@@ -5,5 +5,5 @@ print os.path.exists('login.html')
 
 account_urlpatterns = [
     url(r'login/$',login),
-    url(r'logout/$',logout),
+    url(r'logout/$',logout, ),
 ]

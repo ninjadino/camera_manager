@@ -113,9 +113,13 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+from  datetime import timedelta
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+MONITORED_INTERFACE = "eth0"
+LOG_FILE = "/home/dev/cam_mon.log"
+HOST_TIMEOUT = timedelta(seconds=60)
+LOG_LEVEL="DEBUG"

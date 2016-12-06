@@ -1,0 +1,3 @@
+
+class NewConnection(Exception):
+    pass

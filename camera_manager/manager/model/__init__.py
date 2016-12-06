@@ -1,6 +1,5 @@
 from camera import Camera
-from device import Device
-from history import Seen
+from device import Device, Seen
 
 
 __all__ = ['Camera', 'Device', 'Seen']
