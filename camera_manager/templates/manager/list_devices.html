@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <title>devices</title>
+</head>
+
+<body>
+
+        {% if devices %}
+            <table class="table table-inverse table-striped">
+                <thead>
+                    <tr>
+
+                      <th>IP</th>
+                      <th>MAC</th>
+                      <th>HOSTNAME</th><th>user</th>
+                    </tr>
+                  </thead>
+                <tbody>
+
+            {% for dev in devices %}
+
+                <tr>
+                    {% for part in dev %}
+                    <td><a href="/list_devices/">{{ part }}</a></td>
+                    {% endfor %}
+                    <td><select class="form-control">
+                        <option>nobody</option>
+                        {% for part in users %}
+                            <option>{{ user.username }}</option>
+                        {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+
+        {% else %}
+            <p>No devices are online right now.</p>
+        {% endif %}
+</body>
+{% endblock content %}

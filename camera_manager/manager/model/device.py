@@ -7,6 +7,7 @@ from django.core.validators import validate_ipv46_address
 from django.conf import settings
 from manager.logger import getLogger
 from manager.exceptions import NewConnection
+
 logger = getLogger("device")
 
 class Device(models.Model):
@@ -31,7 +32,6 @@ class Device(models.Model):
         try:
             last = Seen.objects.filter(host=self).latest()
             if ip != str(last.ip):
-                print str(last.ip)
                 logger.debug("ip changed: {self.mac} with ip: {ip}".format(**locals()))
                 raise NewConnection
             delta = moment - last.last_seen
@@ -45,7 +45,6 @@ class Device(models.Model):
             _seen = self._add_seen_entry(ip, moment)
         except NewConnection:
             _seen = self._add_seen_entry(ip, moment)
-
         return _seen
 
     def _add_seen_entry(self, ip, moment):

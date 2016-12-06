@@ -1,14 +1,15 @@
 from django.core.management.base import BaseCommand, CommandError
-from manager.models import Device
-from manager.logger import getLogger
+from manager.models import Device, Seen
 from django.utils import timezone
+from django.conf import settings
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'list active devices'
 
 
     def handle(self, *args, **options):
-       for dev in Device.objects.all():
-           print dev.mac
-           import datetime
-           dev.was_seen('10.1.1.1', timezone.now() )
+        min_date = timezone.now() - settings.HOST_TIMEOUT
+        for dev in Seen.objects.filter(last_seen__gte = min_date):
+            print "HOST:{dev.host.mac}  IP:{dev.ip}".format(**locals())
+
+
