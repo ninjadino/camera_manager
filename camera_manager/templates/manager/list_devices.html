@@ -1,43 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
-<head>
-    <title>devices</title>
-</head>
-
-<body>
-
-        {% if devices %}
-            <table class="table table-inverse table-striped">
-                <thead>
-                    <tr>
-
-                      <th>IP</th>
-                      <th>MAC</th>
-                      <th>HOSTNAME</th><th>user</th>
-                    </tr>
-                  </thead>
-                <tbody>
-
-            {% for dev in devices %}
-
+    {% if devices %}
+        <table class="table table-inverse table-striped " data-spy="scroll">
+            <thead>
                 <tr>
-                    {% for part in dev %}
-                    <td><a href="/list_devices/">{{ part }}</a></td>
-                    {% endfor %}
-                    <td><select class="form-control">
-                        <option>nobody</option>
-                        {% for part in users %}
-                            <option>{{ user.username }}</option>
-                        {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            </table>
 
-        {% else %}
-            <p>No devices are online right now.</p>
-        {% endif %}
-</body>
+                  <th>IP</th>
+                  <th>MAC</th>
+                  <th>HOSTNAME</th><th>user</th>
+                </tr>
+              </thead>
+            <tbody>
+        {% for dev in devices %}
+            <tr class="well-lgl">
+                 <td ><a href="/list_devices/">{{ dev.ip }}</a></td>
+                <td ><a href="/list_devices/">{{ dev.host.mac }}</a></td>
+                 <td ><a href="/list_devices/">{{ dev.host.hostname }}</a></td>
+                <td>
+                    <div class="dropdown">
+                        {% if dev.host.user%}
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">{{ dev.host.user.username }}<span class="caret"></span></button>
+                        {% else %}
+                        <button class="btn btn-inverse dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">No User defined<span class="caret"></span></button>
+                        {% endif%}
+                  <ul class="dropdown-menu">
+                      {% for user in users %}
+                            <li><a href="{% url 'change_user' dev.host.id user.username %}?next={{ request.get_full_path }}">{{ user.username }}</a></li>
+                    {% endfor %}
+
+                  </ul>
+                </div>
+                </td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+
+    {% else %}
+        <p>No devices are online right now.</p>
+    {% endif %}
 {% endblock content %}
