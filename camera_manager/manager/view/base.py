@@ -4,6 +4,7 @@ from manager.models import Device, Seen
 from django.utils import timezone
 from django.template import loader
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 @login_required(login_url='/accounts/login/')
 def index(request):
@@ -25,4 +26,14 @@ def device_list(request):
         'title': "devices"
     }
     template = loader.get_template('manager/list_devices.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='/accounts/login/')
+def device_info(request, device_id):
+    device = get_object_or_404(Device, id=device_id)
+    context = {
+    'device': device
+    }
+    template = loader.get_template('manager/device.html')
     return HttpResponse(template.render(context, request))

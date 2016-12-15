@@ -24,13 +24,20 @@
                         <button class="btn btn-inverse dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">No User defined<span class="caret"></span></button>
                         {% endif%}
                   <ul class="dropdown-menu">
+
                       {% for user in users %}
+                      <li class="dropdown-divider"></li>
                             <li><a href="{% url 'change_user' dev.host.id user.username %}?next={{ request.get_full_path }}">{{ user.username }}</a></li>
                     {% endfor %}
+                      {% if dev.host.user%}
+                      <li class="dropdown-divider"></li>
+                      <li><a href="{% url 'change_user_to_none' dev.host.id  %}?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Unset user</a></li>
+                      {% endif %}
 
                   </ul>
                 </div>
                 </td>
+
 
 
             </tr>
@@ -39,6 +46,8 @@
         </table>
 
     {% else %}
-        <p>No devices are online right now.</p>
+        <div style="height:100%">
+        <p >No devices are online right now.</p>
+            </div>
     {% endif %}
 {% endblock content %}
