@@ -123,3 +123,4 @@ MONITORED_INTERFACE = "eth0"
 LOG_FILE = "/home/dev/cam_mon.log"
 HOST_TIMEOUT = timedelta(seconds=2000)
 LOG_LEVEL="DEBUG"
+PUSHOVER_API_TOKEN="awzsxpqcw2bmcow3bnc99gf3ghxa3w"

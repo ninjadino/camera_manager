@@ -13,9 +13,9 @@
             <tbody>
         {% for dev in devices %}
             <tr class="well-lgl">
-                 <td ><a href="/list_devices/">{{ dev.ip }}</a></td>
-                <td ><a href="/list_devices/">{{ dev.host.mac }}</a></td>
-                 <td ><a href="/list_devices/">{{ dev.host.hostname }}</a></td>
+                 <td ><a href="{% url 'device_info' dev.id %}">{{ dev.ip }}</a></td>
+                <td ><a href="{% url 'device_info' dev.id %}">{{ dev.host.mac }}</a></td>
+                 <td ><a href="{% url 'device_info' dev.id %}">{{ dev.host.hostname }}</a></td>
                 <td>
                     <div class="dropdown">
                         {% if dev.host.user%}

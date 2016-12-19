@@ -1,7 +1,7 @@
-from ..model import Device
+from ..model import Device, Seen
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, HttpResponse,  get_object_or_404
-import json
+import json, datetime
 
 def SetUserForDevice(request,device_id, username=None):
 
@@ -25,17 +25,27 @@ def SetUserForDevice(request,device_id, username=None):
 
 
 def DeviceActivity(request, device_id):
-    pd = """?([\n
-[Date.UTC(2014,9,7),0.7893],\n
-[Date.UTC(2014,9,8),0.7853],\n
-[Date.UTC(2014,9,9),0.7880],\n
-[Date.UTC(2014,9,10),0.7919],\n
-[Date.UTC(2014,9,12),0.7912],\n
-[Date.UTC(2014,9,13),0.7842],\n
-[Date.UTC(2014,9,14),0.7900],\n
-[Date.UTC(2014,9,15),0.7790],\n
-]);"""
-    return HttpResponse(json.dumps(pd))
+    dev = get_object_or_404(
+        Device,
+        id=device_id
+    )
+    activity = list()
+    for seen in Seen.objects.filter(host=dev):
+        activity.append({'y': (seen.first_seen - datetime.timedelta(seconds=1)).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':0})
+        activity.append({'y': seen.first_seen.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':1})
+        activity.append({'y': seen.last_seen.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':1})
+        activity.append({'y': (seen.last_seen + datetime.timedelta(seconds=1)).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':0})
+
+    # pd = [
+    #     { 'y': "2012-02-24 15:00", 'a': 20 },
+    #     { 'y': "2012-02-24 16:00", 'a': 10 },
+    #     { 'y': "2012-02-24 17:10", 'a': 519 },
+    #     { 'y': "2012-02-24 17:10:01", 'a': 0 },
+    #
+    #     { 'y': "2012-02-24 18:00", 'a': 5 },
+    #     { 'y': "2012-02-24 19:00", 'a': 20 }
+    # ]
+    return HttpResponse(json.dumps(activity))
 
 
 
