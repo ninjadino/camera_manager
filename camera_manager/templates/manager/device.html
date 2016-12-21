@@ -5,7 +5,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 <div>
-
+    <h1 style="text-align: center"> {% if device.hostname %}{{ device.hostname }}{% else %}{{ device.mac }}{% endif %}</h1>
+    <h3> History:</h3>
 </div>
 <div id="container" style="height: 500px; min-width: 310px"></div>
 

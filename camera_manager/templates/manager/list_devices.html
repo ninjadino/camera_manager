@@ -1,53 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% if devices %}
-        <table class="table table-inverse table-striped " data-spy="scroll">
-            <thead>
-                <tr>
+{% if devices %}
+<table class="table table-inverse table-striped ">
+    <thead>
+    <tr>
 
-                  <th>IP</th>
-                  <th>MAC</th>
-                  <th>HOSTNAME</th><th>user</th>
-                </tr>
-              </thead>
-            <tbody>
-        {% for dev in devices %}
-            <tr class="well-lgl">
-                 <td ><a href="{% url 'device_info' dev.id %}">{{ dev.ip }}</a></td>
-                <td ><a href="{% url 'device_info' dev.id %}">{{ dev.host.mac }}</a></td>
-                 <td ><a href="{% url 'device_info' dev.id %}">{{ dev.host.hostname }}</a></td>
-                <td>
-                    <div class="dropdown">
-                        {% if dev.host.user%}
-                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">{{ dev.host.user.username }}<span class="caret"></span></button>
-                        {% else %}
-                        <button class="btn btn-inverse dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">No User defined<span class="caret"></span></button>
-                        {% endif%}
-                  <ul class="dropdown-menu">
+        <th>IP</th>
+        <th>MAC</th>
+        <th>HOSTNAME</th><th>user</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for dev in devices %}
+    <tr class="well-lgl">
+        <td ><a href="{% url 'device_info' dev.host.id %}">{{ dev.ip }}</a></td>
+        <td ><a href="{% url 'device_info' dev.host.id %}">{{ dev.host.mac }}</a></td>
+        <td ><a href="{% url 'device_info' dev.host.id %}">{{ dev.host.hostname }}</a></td>
+        <td>
+            <div class="dropdown">
+                {% if dev.host.user %}
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">{{ dev.host.user.username }}<span class="caret"></span></button>
+                {% else %}
+                <button class="btn btn-inverse dropdown-toggle" type="button" data-toggle="dropdown" style="width: 37%">No User defined<span class="caret"></span></button>
+                {% endif%}
+                <ul class="dropdown-menu">
 
-                      {% for user in users %}
-                      <li class="dropdown-divider"></li>
-                            <li><a href="{% url 'change_user' dev.host.id user.username %}?next={{ request.get_full_path }}">{{ user.username }}</a></li>
+                    {% for user in users %}
+                    <li class="dropdown-divider"></li>
+                    <li><a href="{% url 'change_user' dev.host.id user.username %}?next={{ request.get_full_path }}">{{ user.username }}</a></li>
                     {% endfor %}
-                      {% if dev.host.user%}
-                      <li class="dropdown-divider"></li>
-                      <li><a href="{% url 'change_user_to_none' dev.host.id  %}?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Unset user</a></li>
-                      {% endif %}
+                    {% if dev.host.user%}
+                    <li class="dropdown-divider"></li>
+                    <li><a href="{% url 'change_user_to_none' dev.host.id  %}?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Unset user</a></li>
+                    {% endif %}
 
-                  </ul>
-                </div>
-                </td>
-
-
-
-            </tr>
-        {% endfor %}
-        </tbody>
-        </table>
-
-    {% else %}
-        <div style="height:100%">
-        <p >No devices are online right now.</p>
+                </ul>
             </div>
-    {% endif %}
+        </td>
+
+
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div style="height:100%">
+    <p >No devices are online right now.</p>
+</div>
+{% endif %}
 {% endblock content %}

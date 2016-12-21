@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from ..logger import getLogger
-from ..push.push_message import PushoverSender
+from ..push.push_message import PushoverSender, get_sounds
 from django.utils import timezone
 
 ALERT_LEVEL =  (
@@ -20,6 +20,7 @@ class Alert(models.Model):
     level = models.IntegerField(choices=ALERT_LEVEL)
 
     def dispatch(self):
+        self.save()
         profiles = list()
         for cl in ALERT_PROFILE_CLASSES:
             profiles += [profile for profile in cl.objects.filter(level__gte=self.level)]
@@ -36,9 +37,33 @@ class AlertProfile(models.Model):
     def send_alert(self, alert):
         raise NotImplementedError("Almost Abstract class")
 
+    def get_cname(self):
+        class_name = self.__class__
+        return class_name
+
+    @classmethod
+    def getname(cls):
+        return cls.__name__
+
+class param(object):
+    """
+    meant to give to the templates if a param is a list or just regular when values = None
+    """
+    def __init__(self, name, values=None):
+        self.name = name
+        self.values = values
+
 
 class PushoverProfile(AlertProfile):
-
+    params = [
+        param(
+            name = "user_token"
+        ),
+        param(
+            name = "sound",
+            values= get_sounds()
+        )
+    ]
     user_token = models.CharField(max_length=200, unique=True)
     sound = models.CharField(max_length=200, default="bugle")
 
@@ -50,8 +75,18 @@ class PushoverProfile(AlertProfile):
         )
 
 
+
 class SMSAlertProfile(AlertProfile):
+    params = [param(
+        name = 'number',
+    )]
     number = models.CharField(max_length=50)
 
 
 ALERT_PROFILE_CLASSES = [PushoverProfile, SMSAlertProfile]
+
+def get_alert_profiles(user):
+    profiles = list()
+    for cl in ALERT_PROFILE_CLASSES:
+            profiles += [profile for profile in cl.objects.filter(user=user)]
+    return profiles

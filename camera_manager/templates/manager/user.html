@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container"><h1 style="text-align: center"> {{ request.user.username }}</h1>
+
+    <div class="pannel-group">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 style="text-align: left">  Associated devices</h3></div>
+            <div class="panel-body">
+                {% if devices %}
+                <table class="table table-inverse" >
+                    <thead>
+                    <tr>
+
+                        <th>mac</th>
+
+                        <th>HOSTNAME</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dev in devices %}
+                    <tr >
+                        <td ><a href="{% url 'device_info' dev.id %}">{{ dev.mac }}</a></td>
+                        <td ><a href="{% url 'device_info' dev.id %}">{{ dev.hostname }}</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <h2> No device associated</h2>
+                {% endif %}
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 style="text-align: left">  Alert Profiles</h3></div>
+            <div class="panel-body">
+                {% if profiles %}
+                <table class="table  table-striped " data-spy="scroll">
+                    <thead>
+                    <tr>
+
+                        <th>level</th>
+
+                        <th>HOSTNAME</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dev in alert_profiles %}
+                    <tr class="well-lgl">
+                        <td >{{ dev.get_level_display }}</td>
+                        <td >{{ dev.get_cname }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                    <tr> <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#profilemodal"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add profile</button></tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<div id="profilemodal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create alert profile for {{ request.user.username }}</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="level">level:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="level">
+                                <option value="" selected hidden>Please select</option>
+                                <option value="0"> debug</option>
+                                <option value="1"> info</option>
+                                <option value="2"> error</option>
+                                <option value="3"> fatal</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="class">type:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="class" onchange="getval(this);">
+                                <option value="" selected hidden>Please select</option>
+                                {% for cl in alert_classes %}
+                                <option> {{ cl.getname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div id="custom_form" class="row">
+
+                    </div>
+
+
+
+
+
+                    <div class="form-group row" style="margin-top:20px;">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+
+
+function getval(sel)
+{
+
+   {% for class in alert_classes %}
+        if (sel.value == '{{ class.getname }}') {
+        $('#custom_form').empty()
+        {% for param in class.params %}
+        $('#custom_form').append('<div class="form-group">');
+        $('#custom_form').append('<label class="control-label col-sm-2" for="{{ param.name }}">{{ param.name }}:</label>');
+        {% if param.values %}
+            var vv = '<div class="col-sm-10">';
+            vv += '<select class="form-control" id="{{ param.name }}">';
+            vv += '<option value="" selected hidden>Please select</option>';
+             {% for val in param.values %}
+             vv += '<option> {{ val }}</option>';
+             {% endfor %}
+             vv += '</select>';
+             vv += '</div>';
+
+             $('#custom_form').append(vv);
+;
+        {% else %}
+            $('#custom_form').append('<div class="col-sm-10"><input  class="form-control" id="{{ param.name }}" placeholder="Enter {{ param.name }}"></div>');
+        {% endif %}
+
+        $('#custom_form').append('</div>');
+    {% endfor %}
+    }
+{% endfor %}
+};
+</script>
+{% endblock content %}
+

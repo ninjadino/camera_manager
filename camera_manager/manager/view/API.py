@@ -35,18 +35,11 @@ def DeviceActivity(request, device_id):
         activity.append({'y': seen.first_seen.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':1})
         activity.append({'y': seen.last_seen.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':1})
         activity.append({'y': (seen.last_seen + datetime.timedelta(seconds=1)).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 'a':0})
-
-    # pd = [
-    #     { 'y': "2012-02-24 15:00", 'a': 20 },
-    #     { 'y': "2012-02-24 16:00", 'a': 10 },
-    #     { 'y': "2012-02-24 17:10", 'a': 519 },
-    #     { 'y': "2012-02-24 17:10:01", 'a': 0 },
-    #
-    #     { 'y': "2012-02-24 18:00", 'a': 5 },
-    #     { 'y': "2012-02-24 19:00", 'a': 20 }
-    # ]
     return HttpResponse(json.dumps(activity))
 
+
+def AddAlertProfile(request):
+    pass
 
 
 

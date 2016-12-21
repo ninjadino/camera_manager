@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from manager.models import Device, Seen
+from manager.models import Device, Seen, get_alert_profiles, ALERT_PROFILE_CLASSES
 from django.utils import timezone
 from django.template import loader
 from django.conf import settings
@@ -36,4 +36,17 @@ def device_info(request, device_id):
     'device': device
     }
     template = loader.get_template('manager/device.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='/accounts/login/')
+def user_info(request):
+    profiles = get_alert_profiles(request.user)
+    devices = Device.objects.filter(user=request.user)
+    context = {
+    'alert_profiles': profiles,
+    'devices': devices,
+    'alert_classes': ALERT_PROFILE_CLASSES
+    }
+    template = loader.get_template('manager/user.html')
     return HttpResponse(template.render(context, request))
